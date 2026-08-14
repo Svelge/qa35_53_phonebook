@@ -1,7 +1,8 @@
 """Создать отдельный проект под Ilcaro
 ilcaro.
 
-URL: https://ilcarro.web.app/search
+URL:
+https://icarro-v1.netlify.app/search?page=0&size=10
 """
 
 
