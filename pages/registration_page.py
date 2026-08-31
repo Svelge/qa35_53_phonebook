@@ -3,8 +3,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
+from pages.base_page import BasePage
 
-class RegistrationPage:
+
+class RegistrationPage(BasePage):
     REGISTRATION_NAV_LINK = (By.CSS_SELECTOR, "[href='/login']")
     EMAIL_INPUT = (By.CSS_SELECTOR, "input[name='email']")
     PASSWORD_INPUT = (By.CSS_SELECTOR, "input[name='password']")

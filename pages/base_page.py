@@ -20,6 +20,7 @@ class BasePage:
         alert = WebDriverWait(self.driver,timeout=5).until(
             EC.alert_is_present()
         )
+        return alert.text
 
     def accept_alert(self):
         self.driver.switch_to.alert.accept()
