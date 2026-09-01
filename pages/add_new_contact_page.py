@@ -95,3 +95,9 @@ class ContactPage(BasePage):
 
         elements = self.driver.find_elements(*locator)
         return len(elements)
+
+    def create_contact(self,contact):
+        self.open_contact_form()
+        self.fill_contact(contact)
+        self.submit_save()
+
