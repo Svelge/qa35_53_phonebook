@@ -112,6 +112,88 @@ def test_edit_contact_description_updated(authenticated_driver):
     assert actual_description == new_description
 
 
+def test_edit_contact_empty_name_rejected(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+
+    contact = create_contact()
+    contact_page.create_contact(contact)
+
+    contacts_page.open_contact_details(contact.phone)
+    contacts_page.edit_contact_details()
+    contacts_page.set_edit_field(contacts_page.EDIT_NAME_INPUT, "")
+    contacts_page.submit_edit()
+
+    assert contacts_page.contact_name_by_phone(contact.phone) == contact.name
+
+
+def test_edit_contact_empty_last_name_rejected(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+
+    contact = create_contact()
+    contact_page.create_contact(contact)
+
+    contacts_page.open_contact_details(contact.phone)
+    contacts_page.edit_contact_details()
+    contacts_page.set_edit_field(contacts_page.EDIT_LAST_NAME_INPUT, "")
+    contacts_page.submit_edit()
+
+    contacts_page.open_contact_details(contact.phone)
+    contacts_page.edit_contact_details()
+    assert contacts_page.get_edit_contact(contacts_page.EDIT_LAST_NAME_INPUT) == contact.last_name
+
+
+def test_edit_contact_empty_phone_updated(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+
+    contact = create_contact()
+    contact_page.create_contact(contact)
+
+    contacts_page.open_contact_details(contact.phone)
+    contacts_page.edit_contact_details()
+    contacts_page.set_edit_field(contacts_page.EDIT_PHONE_INPUT, "")
+    contacts_page.submit_edit()
+
+    assert contacts_page.contact_cards_count(contact.phone) == 1
+
+
+def test_edit_contact_empty_email_rejected(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+
+    contact = create_contact()
+    contact_page.create_contact(contact)
+
+    contacts_page.open_contact_details(contact.phone)
+    contacts_page.edit_contact_details()
+    contacts_page.set_edit_field(contacts_page.EDIT_EMAIL_INPUT, "")
+    contacts_page.submit_edit()
+
+    contacts_page.open_contact_details(contact.phone)
+    contacts_page.edit_contact_details()
+    assert contacts_page.get_edit_contact(contacts_page.EDIT_EMAIL_INPUT) == contact.email
+
+
+def test_edit_contact_empty_address_rejected(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+
+    contact = create_contact()
+    contact_page.create_contact(contact)
+
+    contacts_page.open_contact_details(contact.phone)
+    contacts_page.edit_contact_details()
+    contacts_page.set_edit_field(contacts_page.EDIT_ADDRESS_INPUT, "")
+    contacts_page.submit_edit()
+
+    contacts_page.open_contact_details(contact.phone)
+    contacts_page.edit_contact_details()
+    assert contacts_page.get_edit_contact(contacts_page.EDIT_ADDRESS_INPUT) == contact.address
+
+
+
 @pytest.mark.skip(reason="BUG-126: Duplicate phone accepted after editing")
 def test_edit_contact_duplicate_phone_negative(authenticated_driver):
     contact_page = ContactPage(authenticated_driver)
