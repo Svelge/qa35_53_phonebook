@@ -1,11 +1,12 @@
 import time
+import logging
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.base_page import BasePage
 
-
+logger = logging.getLogger(__name__)
 class ContactsPage(BasePage):
     CONTACTS_NAV_LINK = (By.CSS_SELECTOR, "[href='/contacts']")
     CONTACT_CARDS = (By.CLASS_NAME,"contact-item_card__2SOIM")
@@ -17,6 +18,7 @@ class ContactsPage(BasePage):
     EDIT_ADDRESS_INPUT = (By.CSS_SELECTOR, "input[placeholder='Address']")
     EDIT_DESCRIPTION_INPUT = (By.CSS_SELECTOR, "input[placeholder='desc']")
     EDIT_SAVE_BTN = (By.XPATH,"//button[text()='Save']")
+    REMOVE_BTN = (By.XPATH, "//button[text()='Remove']")
 
 
 
@@ -50,16 +52,19 @@ class ContactsPage(BasePage):
 
 
     def open_contact_details(self,phone):
-        locator = (By.XPATH, f"//h3[text()='{phone}']")
+        logger.info(f"Opening contact details for phone:{phone}")
+        locator = (By.XPATH, f"//h3[text()='{phone}']/..")
         self.click(locator)
 
     def edit_contact_details(self):
+        logger.info("Opening edit mode")
         self.click(self.EDIT_BTN)
 
     def set_edit_field(self,locator,value):
         self.fill(locator,value)
 
     def submit_edit(self):
+        logger.info("Submitting contact edit")
         self.click(self.EDIT_SAVE_BTN)
         time.sleep(3)
 
@@ -73,3 +78,22 @@ class ContactsPage(BasePage):
 
     def get_edit_contact(self, locator):
         return self.find(locator).get_attribute("value")
+
+    def open_first_contact(self):
+        cards = self.driver.find_elements(*self.CONTACT_CARDS)
+        first_card = cards[0]
+        first_card.click()
+
+    def total_contacts_count(self):
+        return len(self.driver.find_elements(*self.CONTACT_CARDS))
+
+    def remove_current_contact(self):
+        logger.info("Deleting the contact")
+        self.click(self.REMOVE_BTN)
+        time.sleep(2)
+
+    def remove_all_contacts(self):
+        while self.total_contacts_count()>0:
+            self.open_first_contact()
+            self.remove_current_contact()
+

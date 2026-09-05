@@ -1,10 +1,12 @@
 import pytest
+import logging
 from faker import Faker
 
 from data.contact_data import create_contact
 from pages.add_new_contact_page import ContactPage
 from pages.contacts_page import ContactsPage
 
+logger = logging.getLogger(__name__)
 fake = Faker()
 
 def test_edit_contact_name_update(authenticated_driver):
@@ -47,6 +49,8 @@ def test_edit_contact_phone_updated(authenticated_driver):
     contact = create_contact()
     contact_page.create_contact(contact)
     new_phone = fake.unique.numerify("050#######")
+    logger.debug(f"Old phone:{contact.phone}")
+    logger.debug(f"New phone{new_phone}")
 
     contacts_page.open_contact_details(contact.phone)
     contacts_page.edit_contact_details()

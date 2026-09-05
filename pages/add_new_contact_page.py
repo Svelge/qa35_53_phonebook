@@ -1,4 +1,5 @@
 import time
+import logging
 
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
@@ -7,7 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.base_page import BasePage
 
-
+logger = logging.getLogger(__name__)
 class ContactPage(BasePage):
     ADD_NAV_LINK = (By.CSS_SELECTOR,"[href='/add']")
     NAME_INPUT = (By.CSS_SELECTOR,"input[placeholder='Name']")
@@ -97,7 +98,9 @@ class ContactPage(BasePage):
         return len(elements)
 
     def create_contact(self,contact):
+        logger.info(f"Creating contact:{contact.phone}")
         self.open_contact_form()
         self.fill_contact(contact)
         self.submit_save()
+        time.sleep(3)
 

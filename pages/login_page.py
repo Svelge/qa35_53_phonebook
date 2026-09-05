@@ -1,10 +1,12 @@
+import logging
+
 from selenium.common import NoSuchElementException, TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.base_page import BasePage
-
+logger = logging.getLogger(__name__)
 
 class LoginPage(BasePage):
 
@@ -20,6 +22,7 @@ class LoginPage(BasePage):
 
 
     def open_login_form(self):
+        logger.info("Opening logging form")
         self.click(self.LOGIN_NAV_LINK)
 
 

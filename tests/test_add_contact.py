@@ -1,75 +1,148 @@
-import time
+import logging
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import pytest
+from faker import Faker
 
-from pages.base_page import BasePage
+from data.contact_data import create_contact
+from pages.add_new_contact_page import ContactPage
+from pages.contacts_page import ContactsPage
 
+fake = Faker()
+logger = logging.getLogger(__name__)
 
-class ContactPage(BasePage):
-    ADD_NAV_LINK = (By.CSS_SELECTOR, "[href = '/add']")
-    NAME_INPUT = (By.CSS_SELECTOR, "input[placeholder='Name']")
-    LAST_NAME_INPUT = (By.CSS_SELECTOR, "input[placeholder='Last Name']")
-    PHONE_INPUT = (By.CSS_SELECTOR, "input[placeholder='Phone']")
-    EMAIL_INPUT = (By.CSS_SELECTOR, "input[placeholder='email']")
-    ADDRESS_INPUT = (By.CSS_SELECTOR, "input[placeholder='Address']")
-    DESCRIPTION_INPUT = (By.CSS_SELECTOR, "input[placeholder='description']")
-    SAVE_BTN = (By.XPATH, "//button[b[text()='Save']]")
-    CONTACT_NAV_LINK = (By.CSS_SELECTOR,"[href='/contacts']")
+def test_add_contact_success_all_fields(authenticated_driver):
+    logger.info("Test: test_add_contact_success_all_fields")
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+    contact = create_contact()
 
-    # def __init__(self, driver):
-    #     self.driver = driver
+    contact_page.create_contact(contact)
 
-    def open_contact_form(self):
-        # self.driver.find_element(*self.ADD_NAV_LINK).click()
-        self.click(self.ADD_NAV_LINK)
-
-    def fill_name(self, name):
-        # self.driver.find_element(*self.NAME_INPUT).clear()
-        # self.driver.find_element(*self.NAME_INPUT).send_keys(name)
-        self.fill(self.NAME_INPUT,name)
-
-    def fill_last_name(self, last_name):
-        # self.driver.find_element(*self.LAST_NAME_INPUT).clear()
-        # self.driver.find_element(*self.LAST_NAME_INPUT).send_keys(last_name)
-        self.fill(self.LAST_NAME_INPUT, last_name)
-
-    def fill_phone(self, phone):
-        # self.driver.find_element(*self.PHONE_INPUT).clear()
-        # self.driver.find_element(*self.PHONE_INPUT).send_keys(phone)
-        self.fill(self.PHONE_INPUT, phone)
-
-    def fill_email(self, email):
-        # self.driver.find_element(*self.EMAIL_INPUT).clear()
-        # self.driver.find_element(*self.EMAIL_INPUT).send_keys(email)
-        self.fill(self.EMAIL_INPUT,email)
-
-    def fill_address(self, address):
-        # self.driver.find_element(*self.ADDRESS_INPUT).clear()
-        # self.driver.find_element(*self.ADDRESS_INPUT).send_keys(address)
-        self.fill(self.ADDRESS_INPUT,address)
-
-    def fill_description(self, description):
-        # self.driver.find_element(*self.DESCRIPTION_INPUT).clear()
-        # self.driver.find_element(*self.DESCRIPTION_INPUT).send_keys(description)
-        self.fill(self.DESCRIPTION_INPUT,description)
-
-    def fill_contact_form(self, contact):
-        self.fill_name(contact.name)
-        self.fill_last_name(contact.last_name)
-        self.fill_phone(contact.phone)
-        self.fill_email(contact.email)
-        self.fill_address(contact.address)
-        self.fill_description(contact.description)
-
-    def submit_contact(self):
-        # self.driver.find_element(*self.SAVE_BTN).click()
-        self.click(self.SAVE_BTN)
+    assert contacts_page.contact_card_visible(contact.phone)
 
 
 
 
-    def is_add_button_active(self):
-        add_link = self.find(self.ADD_NAV_LINK)
-        return "active" in add_link.get_attribute("class")
+def test_add_contact_success_req_fields(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+
+    contact = create_contact(description="")
+    contact_page.create_contact(contact)
+
+    assert contacts_page.contact_card_visible(contact.phone)
+
+
+
+PHONE_ALERT_TEXT = "Phone not valid: Phone number must contain only digits! And length min 10, max 15!"
+EMAIL_ALERT_TEXT = "Email not valid: must be a well-formed email address"
+
+
+def test_add_contact_empty_name(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+    contact = create_contact(name = "")
+
+    contact_page.create_contact(contact)
+
+    assert contact_page.is_add_button_active()
+
+    contacts_page.open_contacts_list()
+    assert contacts_page.contact_cards_count(contact.phone) == 0
+
+
+
+
+def test_add_contact_empty_last_name(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+    contact = create_contact(last_name="")
+
+
+    contact_page.create_contact(contact)
+
+    assert contact_page.is_add_button_active()
+
+    contacts_page.open_contacts_list()
+    assert contacts_page.contact_cards_count(contact.phone) == 0
+
+
+
+#@pytest.mark.skip(reason = "BUG-123: Contact with empty mail")
+@pytest.mark.xfail (reason = "BUG-123: Contact with empty mail")
+def test_add_contact_empty_email(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+    contact = create_contact(email="")
+
+    contact_page.create_contact(contact)
+
+    assert contact_page.is_add_button_active()
+
+    contacts_page.open_contacts_list()
+    assert contacts_page.contact_cards_count(contact.phone) == 0
+
+
+def test_add_contact_empty_address(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+    contact = create_contact(address="")
+
+
+    contact_page.create_contact(contact)
+
+    assert contact_page.is_add_button_active()
+
+    contacts_page.open_contacts_list()
+    assert contacts_page.contact_cards_count(contact.phone) == 0
+
+
+def test_add_contact_invalid_phone(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+    contact = create_contact(phone="0504")
+
+    contact_page.create_contact(contact)
+
+
+    assert contact_page.get_alert_text().strip() == PHONE_ALERT_TEXT
+    contact_page.accept_alert()
+    assert contact_page.is_add_button_active()
+
+    contacts_page.open_contacts_list()
+    assert contacts_page.contact_cards_count(contact.phone) == 0
+
+
+def test_add_contact_invalid_email(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+    contact = create_contact(email="invalid_email_format")
+
+    contact_page.create_contact(contact)
+
+    assert contact_page.get_alert_text().strip() == EMAIL_ALERT_TEXT
+    contact_page.accept_alert()
+
+    assert contact_page.is_add_button_active()
+
+    contacts_page.open_contacts_list()
+    assert contacts_page.contact_cards_count(contact.phone) == 0
+
+
+@pytest.mark.xfail (reason = "BUG-124: Duplicate phone")
+def test_add_contact_duplicate_phone_rejected(authenticated_driver):
+    contact_page = ContactPage(authenticated_driver)
+    contacts_page = ContactsPage(authenticated_driver)
+
+    shared_phone = fake.unique.numerify("050##########")
+    first_contact = create_contact(phone=shared_phone)
+    second_contact = create_contact(phone=shared_phone)
+
+    contact_page.create_contact(first_contact)
+    assert contacts_page.contact_card_visible(shared_phone)
+
+    contact_page.create_contact(second_contact)
+
+
+    contacts_page.open_contacts_list()
+    assert contacts_page.contact_cards_count(shared_phone) == 1
