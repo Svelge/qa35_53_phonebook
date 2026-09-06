@@ -43,6 +43,7 @@ def test_edit_contact_last_name_update(authenticated_driver):
     assert actual_last_name == new_last_name
 
 def test_edit_contact_phone_updated(authenticated_driver):
+    logger.info("Test: edit_contact_phone_updated")
     contact_page = ContactPage(authenticated_driver)
     contacts_page = ContactsPage(authenticated_driver)
 
