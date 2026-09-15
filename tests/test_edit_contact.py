@@ -9,6 +9,8 @@ from pages.contacts_page import ContactsPage
 logger = logging.getLogger(__name__)
 fake = Faker()
 
+@pytest.mark.smoke
+@pytest.mark.regression
 def test_edit_contact_name_update(authenticated_driver):
     contact_page=ContactPage(authenticated_driver)
     contacts_page=ContactsPage(authenticated_driver)
