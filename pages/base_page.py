@@ -21,7 +21,7 @@ class BasePage:
 
 
     def get_alert_text(self):
-        alert = WebDriverWait(self.driver,timeout=5).until(
+        alert = WebDriverWait(self.driver,timeout=10).until(
             EC.alert_is_present()
         )
         return alert.text

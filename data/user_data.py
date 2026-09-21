@@ -13,10 +13,10 @@ def create_user(username=None, password=None):
         )
     )
 
-EXISTING_USER_EMAIL = "margo@gmail.com"
-EXISTING_USER_PASSWORD = "Mmar123456$"
-INVALID_EMAIL = "margogmail.com"
-INVALID_PASSWORD = "Mmar123"
+EXISTING_USER_EMAIL = "ground.control.p@gmail.com"
+EXISTING_USER_PASSWORD = "Qwerty123$"
+INVALID_EMAIL = "ground.control.bmail.com"
+INVALID_PASSWORD = "Qwerty123"
 
 
 def existing_user():
