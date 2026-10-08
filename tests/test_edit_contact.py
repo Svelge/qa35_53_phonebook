@@ -1,3 +1,4 @@
+import allure
 import pytest
 import logging
 from faker import Faker
@@ -11,6 +12,8 @@ fake = Faker()
 
 @pytest.mark.smoke
 @pytest.mark.regression
+@allure.story("Editing contact success")
+@allure.title("Contact name update")
 def test_edit_contact_name_update(authenticated_driver):
     contact_page=ContactPage(authenticated_driver)
     contacts_page=ContactsPage(authenticated_driver)
@@ -30,6 +33,8 @@ def test_edit_contact_name_update(authenticated_driver):
 
     assert contacts_page.contact_name_by_phone(contact.phone) == new_name
 
+@allure.story("Editing contact success")
+@allure.title("Contact last name update ")
 def test_edit_contact_last_name_update(authenticated_driver):
     contact_page=ContactPage(authenticated_driver)
     contacts_page=ContactsPage(authenticated_driver)
@@ -52,6 +57,8 @@ def test_edit_contact_last_name_update(authenticated_driver):
     actual_last_name = contacts_page.get_edit_contact(contacts_page.EDIT_LAST_NAME_INPUT)
     assert actual_last_name == new_last_name
 
+@allure.story("Editing contact success")
+@allure.title("Contact phone update")
 def test_edit_contact_phone_updated(authenticated_driver):
     logger.info("Test: edit_contact_phone_updated")
     contact_page = ContactPage(authenticated_driver)
@@ -75,6 +82,8 @@ def test_edit_contact_phone_updated(authenticated_driver):
     assert contacts_page.contact_card_visible(new_phone)
     assert contacts_page.contact_cards_count(contact.phone) == 0
 
+@allure.story("Editing contact success")
+@allure.title("Contact email update ")
 def test_edit_contact_email_updated(authenticated_driver):
     contact_page=ContactPage(authenticated_driver)
     contacts_page=ContactsPage(authenticated_driver)
@@ -97,6 +106,8 @@ def test_edit_contact_email_updated(authenticated_driver):
     actual_email =  contacts_page.get_edit_contact(contacts_page.EDIT_EMAIL_INPUT)
     assert actual_email == new_email
 
+@allure.story("Editing contact success")
+@allure.title("Contact address update")
 def test_edit_contact_address_updated(authenticated_driver):
     contact_page=ContactPage(authenticated_driver)
     contacts_page=ContactsPage(authenticated_driver)
@@ -120,6 +131,8 @@ def test_edit_contact_address_updated(authenticated_driver):
     assert actual_address == new_address
 
 @pytest.mark.skip(reason="BUG-125: Object undefined")
+@allure.story("Editing contact success")
+@allure.title("Contact description update")
 def test_edit_contact_description_updated(authenticated_driver):
     contact_page=ContactPage(authenticated_driver)
     contacts_page=ContactsPage(authenticated_driver)
@@ -142,7 +155,8 @@ def test_edit_contact_description_updated(authenticated_driver):
     actual_description = contacts_page.get_edit_contact(contacts_page.EDIT_DESCRIPTION_INPUT)
     assert actual_description == new_description
 
-
+@allure.story("Editing contact fail")
+@allure.title("Contact editing with empty name")
 def test_edit_contact_empty_name_rejected(authenticated_driver):
     contact_page = ContactPage(authenticated_driver)
     contacts_page = ContactsPage(authenticated_driver)
@@ -160,7 +174,8 @@ def test_edit_contact_empty_name_rejected(authenticated_driver):
 
     assert contacts_page.contact_name_by_phone(contact.phone) == contact.name
 
-
+@allure.story("Editing contact fail")
+@allure.title("Contact editing with empty last name")
 def test_edit_contact_empty_last_name_rejected(authenticated_driver):
     contact_page = ContactPage(authenticated_driver)
     contacts_page = ContactsPage(authenticated_driver)
@@ -180,7 +195,8 @@ def test_edit_contact_empty_last_name_rejected(authenticated_driver):
     contacts_page.edit_contact_details()
     assert contacts_page.get_edit_contact(contacts_page.EDIT_LAST_NAME_INPUT) == contact.last_name
 
-
+@allure.story("Editing contact fail")
+@allure.title("Contact editing with empty phone")
 def test_edit_contact_empty_phone_updated(authenticated_driver):
     contact_page = ContactPage(authenticated_driver)
     contacts_page = ContactsPage(authenticated_driver)
@@ -197,7 +213,8 @@ def test_edit_contact_empty_phone_updated(authenticated_driver):
 
     assert contacts_page.contact_cards_count(contact.phone) == 1
 
-
+@allure.story("Editing contact fail")
+@allure.title("Contact editing with empty email")
 def test_edit_contact_empty_email_rejected(authenticated_driver):
     contact_page = ContactPage(authenticated_driver)
     contacts_page = ContactsPage(authenticated_driver)
@@ -215,7 +232,8 @@ def test_edit_contact_empty_email_rejected(authenticated_driver):
     contacts_page.edit_contact_details()
     assert contacts_page.get_edit_contact(contacts_page.EDIT_EMAIL_INPUT) == contact.email
 
-
+@allure.story("Editing contact fail")
+@allure.title("Contact editing with empty address")
 def test_edit_contact_empty_address_rejected(authenticated_driver):
     contact_page = ContactPage(authenticated_driver)
     contacts_page = ContactsPage(authenticated_driver)
@@ -236,6 +254,8 @@ def test_edit_contact_empty_address_rejected(authenticated_driver):
 
 
 @pytest.mark.skip(reason="BUG-126: Duplicate phone accepted after editing")
+@allure.story("Editing contact fail")
+@allure.title("Contact editing with duplicated phone")
 def test_edit_contact_duplicate_phone_negative(authenticated_driver):
     contact_page = ContactPage(authenticated_driver)
     contacts_page = ContactsPage(authenticated_driver)
@@ -244,7 +264,7 @@ def test_edit_contact_duplicate_phone_negative(authenticated_driver):
     contact_page.create_contact(existing_contact)
     contact_page.create_contact(other_contact)
 
-    logger.info("Testing duplicate edited phone: existing_phone=%s,other_phone=%",existing_contact.phone,other_contact.phone)
+    logger.info("Testing duplicate edited phone: existing_phone=%s,other_phone=%s",existing_contact.phone,other_contact.phone)
 
     contacts_page.open_contact_details(other_contact.phone)
     contacts_page.edit_contact_details()
@@ -254,6 +274,8 @@ def test_edit_contact_duplicate_phone_negative(authenticated_driver):
     assert contacts_page.contact_cards_count(existing_contact.phone) == 1
 
 @pytest.mark.skip(reason="BUG-127: Duplicate email accepted after editing")
+@allure.story("Editing contact fail")
+@allure.title("Contact editing with duplicated email")
 def test_edit_contact_duplicate_email_negative(authenticated_driver):
     contact_page = ContactPage(authenticated_driver)
     contacts_page = ContactsPage(authenticated_driver)
@@ -262,7 +284,7 @@ def test_edit_contact_duplicate_email_negative(authenticated_driver):
     contact_page.create_contact(existing_contact)
     contact_page.create_contact(other_contact)
 
-    logger.info("Testing duplicate edited email: existing_phone=%s,other_phone=%", existing_contact.phone,
+    logger.info("Testing duplicate edited email: existing_phone=%s,other_phone=%s", existing_contact.phone,
                 other_contact.phone)
 
     contacts_page.open_contact_details(other_contact.phone)

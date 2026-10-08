@@ -1,5 +1,6 @@
 import logging
 
+import allure
 import pytest
 
 from data.user_data import existing_user
@@ -12,6 +13,10 @@ logger = logging.getLogger(__name__)
 
 @pytest.mark.smoke
 @pytest.mark.regression
+@allure.story("Login success")
+@allure.title("Logging of user with valid data")
+@allure.description("User with valid data log in the system. Fill the fields email and password and click on button Login")
+@allure.severity(allure.severity_level.CRITICAL)
 def test_login_success(driver):
     login_page = LoginPage(driver)
     user = existing_user()

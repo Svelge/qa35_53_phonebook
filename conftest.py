@@ -12,6 +12,7 @@ from data.user_data import existing_user
 from pages.add_new_contact_page import ContactPage
 from pages.contacts_page import ContactsPage
 from pages.login_page import LoginPage
+from utils.config import BASE_URL
 from utils.logger_config import configure_logging
 from utils.selenium_listener import SeleniumEventListener
 
@@ -29,7 +30,7 @@ def driver():
 
     yield EventFiringWebDriver(driver,SeleniumEventListener())
 
-    logger.info("Closing browser session")
+    logger.info(BASE_URL)
 
     driver.quit()
 

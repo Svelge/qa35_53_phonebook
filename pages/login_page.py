@@ -1,5 +1,6 @@
 import logging
 
+import allure
 from selenium.common import NoSuchElementException, TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -20,22 +21,24 @@ class LoginPage(BasePage):
     # def __init__(self,driver):
     #     self.driver = driver
 
-
+    @allure.step("Open login form")
     def open_login_form(self):
         logger.info("Opening logging form")
         self.click(self.LOGIN_NAV_LINK)
 
-
+    @allure.step("fill email")
     def fill_email(self,email):
         # self.driver.find_element(*self.EMAIL_INPUT).clear()
         # self.driver.find_element(*self.EMAIL_INPUT).send_keys(email)
         self.fill(self.EMAIL_INPUT,email)
 
+    @allure.step("fill password")
     def fill_password(self,password):
         # self.driver.find_element(*self.PASSWORD_INPUT).clear()
         # self.driver.find_element(*self.PASSWORD_INPUT).send_keys(password)
         self.fill(self.PASSWORD_INPUT,password)
 
+    @allure.step("submit login")
     def submit_login(self):
         # self.driver.find_element(*self.LOGIN_BTN).click()
         self.click(self.LOGIN_BTN)
@@ -51,9 +54,10 @@ class LoginPage(BasePage):
 
     def is_logged(self):
         try:
-            WebDriverWait(self.driver,timeout=5).until(
-                EC.visibility_of_element_located(self.SIGN_OUT_BTN)
-            )
+            # WebDriverWait(self.driver,timeout=5).until(
+            #     EC.visibility_of_element_located(self.SIGN_OUT_BTN)
+            # )
+            self.wait_until_visible(self.SIGN_OUT_BTN)
             return True
         except TimeoutException:
             return False
