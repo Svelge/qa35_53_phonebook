@@ -20,8 +20,17 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           EXISTING_USER_EMAIL: ${{ secrets.EXISTING_USER_EMAIL }}
           EXISTING_USER_PASSWORD: ${{ secrets.EXISTING_USER_PASSWORD }}
-        run: pytest tests/test_login.py --browser=Chrome --headless
-
+        run: pytest tests/test_login.py --browser=chrome --headless --alluredir=allure-results
+      - name: Upload diagnostics (Chrome)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-diagnostics
+          path: |
+            logs/
+            screenshots/
+            allure-results/
+          if-no-files-found: ignore
   test-firefox:
     runs-on: ubuntu-latest
 
@@ -38,4 +47,14 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           EXISTING_USER_EMAIL: ${{ secrets.EXISTING_USER_EMAIL }}
           EXISTING_USER_PASSWORD: ${{ secrets.EXISTING_USER_PASSWORD }}
-        run: pytest tests/test_login.py --browser=firefox --headless
+        run: pytest tests/test_login.py --browser=firefox --headless --alluredir=allure-results
+      - name: Upload diagnostics (Firefox)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefox-diagnostics
+          path: |
+            logs/
+            screenshots/
+            allure-results/
+          if-no-files-found: ignore

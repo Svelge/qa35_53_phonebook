@@ -52,7 +52,7 @@ def driver(request):
         options = webdriver.FirefoxOptions()
         if headless:
             options.add_argument("--headless")
-        driver = webdriver.Firefox()
+        driver = webdriver.Firefox(options=options)
     else:
         raise ValueError(f"Unsupported browser:{browser}")
 
