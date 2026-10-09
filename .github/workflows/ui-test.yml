@@ -20,4 +20,4 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           EXISTING_USER_EMAIL: ${{ secrets.EXISTING_USER_EMAIL }}
           EXISTING_USER_PASSWORD: ${{ secrets.EXISTING_USER_PASSWORD }}
-      - run: pytest tests/test_login.py --browser=Chrome --headless
+        run: pytest tests/test_login.py --browser=Chrome --headless
