@@ -29,7 +29,7 @@ def pytest_addoption(parser):
         help = "Browser to run tests in: Chrome of firefox"
     )
 
-    parser.addpotion(
+    parser.addoption(
         "--headless",
         action = "store_true",
         help = "Run the browser without a visible window"
