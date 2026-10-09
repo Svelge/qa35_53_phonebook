@@ -20,10 +20,42 @@ configure_logging()
 logger = logging.getLogger(__name__)
 SCREENSHOTS_DIR = Path(__file__).parent / "screenshots"
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--browser",
+        action = "store",
+        default = "chrome",
+        choices = ["chrome","firefox"],
+        help = "Browser to run tests in: Chrome of firefox"
+    )
+
+    parser.addpotion(
+        "--headless",
+        action = "store_true",
+        help = "Run the browser without a visible window"
+    )
+
+
 @pytest.fixture #(scope="function") - чистый браузер (по сути по умолчвнию), session - один браузер, одна сессия логина на все тесты
-def driver():
+def driver(request):
+    browser = request.config.getoption("--browser")
+    headless = request.config.getoption("--headless")
+
     logger.info("Starting browser session")
-    driver = webdriver.Chrome()
+
+    if browser == "chrome":
+        options = webdriver.ChromeOptions()
+        if headless:
+            options.add_argument("--headless=new")
+        driver = webdriver.Chrome(options=options)
+    elif browser == "firefox":
+        options = webdriver.FirefoxOptions()
+        if headless:
+            options.add_argument("--headless")
+        driver = webdriver.Firefox()
+    else:
+        raise ValueError(f"Unsupported browser:{browser}")
+
     driver.implicitly_wait(5) #в течение 5 секунд постоянно обращается к браузеру и смотрит появлился ли элемент(по сути относится к find element)
     driver.maximize_window() #на полный экран
     driver.get("https://telranedu.web.app/")
